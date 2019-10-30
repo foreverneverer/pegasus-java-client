@@ -4,8 +4,25 @@
   <groupId>com.xiaomi.infra</groupId>
   <artifactId>pegasus-client</artifactId>
   <packaging>jar</packaging>
-  <version>1.12-thrift-0.11.0-inlined-SNAPSHOT</version>
+  <version>1.11.8-thrift-0.11.0-inlined</version>
   <name>Pegasus Java Client</name>
+
+  <distributionManagement>
+       <repository>
+           <id>archiva.internal</id>
+           <name>Internal Release Repository</name>
+           <url>http://nexus.d.xiaomi.net/nexus/content/repositories/releases/
+           </url>
+       </repository>
+       <snapshotRepository>
+           <id>archiva.snapshots</id>
+           <name>Internal Snapshot Repository</name>
+           <url>http://nexus.d.xiaomi.net/nexus/content/repositories/snapshots/
+           </url>
+       </snapshotRepository>
+   </distributionManagement>
+
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
