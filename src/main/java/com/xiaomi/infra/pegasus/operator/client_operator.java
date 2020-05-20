@@ -7,6 +7,7 @@ import com.xiaomi.infra.pegasus.base.error_code;
 import com.xiaomi.infra.pegasus.base.gpid;
 import com.xiaomi.infra.pegasus.replication.request_meta;
 import com.xiaomi.infra.pegasus.rpc.ThriftHeader;
+import com.xiaomi.infra.pegasus.tools.LatencyTracer;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TProtocol;
 
@@ -23,6 +24,7 @@ public abstract class client_operator {
     this.tableName = tableName;
     this.rpc_error = new error_code();
     this.enableBackupRequest = enableBackupRequest;
+    this.latencyTracer = new LatencyTracer();
   }
 
   public client_operator(gpid gpid, String tableName, long partitionHash) {
@@ -94,4 +96,5 @@ public abstract class client_operator {
   public String tableName; // only for metrics
   public error_code rpc_error;
   public boolean enableBackupRequest;
+  public LatencyTracer latencyTracer;
 }

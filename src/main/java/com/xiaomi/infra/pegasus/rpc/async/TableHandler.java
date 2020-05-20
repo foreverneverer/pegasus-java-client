@@ -239,6 +239,10 @@ public class TableHandler extends Table {
 
   void onRpcReply(
       ClientRequestRound round, int tryId, long cachedConfigVersion, String serverAddr) {
+
+    long now = System.nanoTime();
+    round.getOperator().latencyTracer.addPoint(String.format("ts:%d, onRpcReply", now), now);
+
     // judge if it is the first response
     if (round.isCompleted) {
       return;
@@ -358,6 +362,9 @@ public class TableHandler extends Table {
   }
 
   void call(final ClientRequestRound round, final int tryId) {
+    long now = System.nanoTime();
+    round.getOperator().latencyTracer.addPoint(String.format("ts:%d, call", now), now);
+
     // tableConfig & handle is initialized in constructor, so both shouldn't be null
     final TableConfiguration tableConfig = tableConfig_.get();
     final ReplicaConfiguration handle =
@@ -477,6 +484,11 @@ public class TableHandler extends Table {
 
   @Override
   public void asyncOperate(client_operator op, ClientOPCallback callback, int timeoutMs) {
+
+    long now = System.nanoTime();
+    op.latencyTracer.setRequestType(op.name());
+    op.latencyTracer.addPoint(String.format("ts:%d, asyncOperate", now), now);
+
     if (timeoutMs <= 0) {
       timeoutMs = manager_.getTimeout();
     }

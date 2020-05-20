@@ -6,6 +6,7 @@ package com.xiaomi.infra.pegasus.rpc.async;
 import com.xiaomi.infra.pegasus.base.error_code.error_types;
 import com.xiaomi.infra.pegasus.base.rpc_address;
 import com.xiaomi.infra.pegasus.operator.client_operator;
+import com.xiaomi.infra.pegasus.tools.LatencyTracer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
@@ -30,6 +31,7 @@ public class ReplicaSession {
     public ScheduledFuture<?> timeoutTask;
     public long timeoutMs;
     public boolean isBackupRequest;
+    public LatencyTracer latencyTracer;
   }
 
   public enum ConnState {
@@ -85,8 +87,15 @@ public class ReplicaSession {
       Runnable callbackFunc,
       long timeoutInMilliseconds,
       boolean isBackupRequest) {
+
+    long now = System.nanoTime();
+    op.latencyTracer.addPoint(String.format("ts:%d, asyncSend", now), now);
+
     RequestEntry entry = new RequestEntry();
     entry.sequenceId = seqId.getAndIncrement();
+
+    op.latencyTracer.setId(seqId.get());
+
     entry.op = op;
     entry.callback = callbackFunc;
     // NOTICE: must make sure the msg is put into the pendingResponse map BEFORE
@@ -95,6 +104,7 @@ public class ReplicaSession {
     entry.timeoutTask = addTimer(entry.sequenceId, timeoutInMilliseconds);
     entry.timeoutMs = timeoutInMilliseconds;
     entry.isBackupRequest = isBackupRequest;
+    entry.latencyTracer = op.latencyTracer;
 
     // We store the connection_state & netty channel in a struct so that they can fetch and update
     // in atomic.
@@ -112,7 +122,11 @@ public class ReplicaSession {
           pendingSend.offer(entry);
         }
       }
+      now = System.nanoTime();
+      entry.latencyTracer.addPoint(String.format("ts:%d, tryConnect", now), now);
       tryConnect();
+      now = System.nanoTime();
+      entry.latencyTracer.addPoint(String.format("ts:%d, connectComplete", now), now);
     }
     return entry.sequenceId;
   }
@@ -283,6 +297,9 @@ public class ReplicaSession {
         isTimeoutTask);
     RequestEntry entry = pendingResponse.remove(seqID);
     if (entry != null) {
+      long now = System.nanoTime();
+      entry.latencyTracer.addPoint(
+          String.format("ts:%d, tryNotifyFailureWithSeqID(%s)", now, isTimeoutTask), now);
       if (!isTimeoutTask && entry.timeoutTask != null) {
         entry.timeoutTask.cancel(true);
       }
@@ -299,6 +316,8 @@ public class ReplicaSession {
                 name(),
                 sessionResetTimeWindowMs / 1000);
             closeSession(); // maybe fail when the session is already disconnected.
+            entry.latencyTracer.addPoint(
+                String.format("ts:%d, closeSessionComplete(%s)", now, isTimeoutTask), now);
             errno = error_types.ERR_SESSION_RESET;
           }
         }
@@ -318,6 +337,9 @@ public class ReplicaSession {
   }
 
   private void write(final RequestEntry entry, VolatileFields cache) {
+    long now = System.nanoTime();
+    entry.latencyTracer.addPoint(String.format("ts:%d, write", now), now);
+
     cache
         .nettyChannel
         .writeAndFlush(entry)
@@ -327,6 +349,8 @@ public class ReplicaSession {
               public void operationComplete(ChannelFuture channelFuture) throws Exception {
                 // NOTICE: we never do the connection things, this should be the duty of
                 // ChannelHandler, we only notify the request
+                long now = System.nanoTime();
+                entry.latencyTracer.addPoint(String.format("ts:%d, writeComplete", now), now);
                 if (!channelFuture.isSuccess()) {
                   logger.info(
                       "{} write seqid {} failed: ",
