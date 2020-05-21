@@ -21,7 +21,7 @@ public class LatencyTracer {
   }
 
   public void addPoint(String name, long currentTime) {
-    points.put(name, currentTime - lastTime);
+    points.put(String.format("ts:%s, %s", currentTime, name), currentTime - lastTime);
     lastTime = currentTime;
   }
 

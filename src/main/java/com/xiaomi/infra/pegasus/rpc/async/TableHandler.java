@@ -241,7 +241,7 @@ public class TableHandler extends Table {
       ClientRequestRound round, int tryId, long cachedConfigVersion, String serverAddr) {
 
     long now = System.nanoTime();
-    round.getOperator().latencyTracer.addPoint(String.format("ts:%d, onRpcReply", now), now);
+    round.getOperator().latencyTracer.addPoint("onRpcReply", now);
 
     // judge if it is the first response
     if (round.isCompleted) {
@@ -363,7 +363,7 @@ public class TableHandler extends Table {
 
   void call(final ClientRequestRound round, final int tryId) {
     long now = System.nanoTime();
-    round.getOperator().latencyTracer.addPoint(String.format("ts:%d, call", now), now);
+    round.getOperator().latencyTracer.addPoint("call", now);
 
     // tableConfig & handle is initialized in constructor, so both shouldn't be null
     final TableConfiguration tableConfig = tableConfig_.get();
@@ -487,7 +487,7 @@ public class TableHandler extends Table {
 
     long now = System.nanoTime();
     op.latencyTracer.setRequestType(op.name());
-    op.latencyTracer.addPoint(String.format("ts:%d, asyncOperate", now), now);
+    op.latencyTracer.addPoint("asyncOperate", now);
 
     if (timeoutMs <= 0) {
       timeoutMs = manager_.getTimeout();

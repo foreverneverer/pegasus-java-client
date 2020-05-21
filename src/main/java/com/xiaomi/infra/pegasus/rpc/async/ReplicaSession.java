@@ -89,7 +89,7 @@ public class ReplicaSession {
       boolean isBackupRequest) {
 
     long now = System.nanoTime();
-    op.latencyTracer.addPoint(String.format("ts:%d, asyncSend", now), now);
+    op.latencyTracer.addPoint("asyncSend", now);
 
     RequestEntry entry = new RequestEntry();
     entry.sequenceId = seqId.getAndIncrement();
@@ -123,10 +123,10 @@ public class ReplicaSession {
         }
       }
       now = System.nanoTime();
-      entry.latencyTracer.addPoint(String.format("ts:%d, tryConnect", now), now);
+      entry.latencyTracer.addPoint("tryConnect", now);
       tryConnect();
       now = System.nanoTime();
-      entry.latencyTracer.addPoint(String.format("ts:%d, connectComplete", now), now);
+      entry.latencyTracer.addPoint("connectComplete", now);
     }
     return entry.sequenceId;
   }
@@ -299,7 +299,7 @@ public class ReplicaSession {
     if (entry != null) {
       long now = System.nanoTime();
       entry.latencyTracer.addPoint(
-          String.format("ts:%d, tryNotifyFailureWithSeqID(%s)", now, isTimeoutTask), now);
+          String.format("tryNotifyFailureWithSeqID(%s)", isTimeoutTask), now);
       if (!isTimeoutTask && entry.timeoutTask != null) {
         entry.timeoutTask.cancel(true);
       }
@@ -317,7 +317,7 @@ public class ReplicaSession {
                 sessionResetTimeWindowMs / 1000);
             closeSession(); // maybe fail when the session is already disconnected.
             entry.latencyTracer.addPoint(
-                String.format("ts:%d, closeSessionComplete(%s)", now, isTimeoutTask), now);
+                String.format("closeSessionComplete(%s)", isTimeoutTask), now);
             errno = error_types.ERR_SESSION_RESET;
           }
         }
@@ -338,7 +338,7 @@ public class ReplicaSession {
 
   private void write(final RequestEntry entry, VolatileFields cache) {
     long now = System.nanoTime();
-    entry.latencyTracer.addPoint(String.format("ts:%d, write", now), now);
+    entry.latencyTracer.addPoint("write", now);
 
     cache
         .nettyChannel
@@ -350,7 +350,7 @@ public class ReplicaSession {
                 // NOTICE: we never do the connection things, this should be the duty of
                 // ChannelHandler, we only notify the request
                 long now = System.nanoTime();
-                entry.latencyTracer.addPoint(String.format("ts:%d, writeComplete", now), now);
+                entry.latencyTracer.addPoint("writeComplete", now);
                 if (!channelFuture.isSuccess()) {
                   logger.info(
                       "{} write seqid {} failed: ",
