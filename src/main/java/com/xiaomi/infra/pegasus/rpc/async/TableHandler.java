@@ -242,16 +242,9 @@ public class TableHandler extends Table {
     // judge if it is the first response
     if (round.isCompleted) {
       return;
-    } else {
-      synchronized (round) {
-        // the fastest response has been received
-        if (round.isCompleted) {
-          return;
-        }
-        round.isCompleted = true;
-      }
     }
 
+    round.isCompleted = true;
     // cancel the backup request task
     if (round.backupRequestTask != null) {
       round.backupRequestTask.cancel(true);
