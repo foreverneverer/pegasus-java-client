@@ -218,12 +218,13 @@ public class TestScan {
   }
 
   @Test
-  public void testOverallScan() throws PException {
+  public void testOverallScan() throws PException, InterruptedException {
     System.out.println("TEST OVERALL_SCAN...");
 
     ScanOptions options = new ScanOptions();
+    options.batchSize = 1;
     TreeMap<String, TreeMap<String, String>> data = new TreeMap<String, TreeMap<String, String>>();
-    List<PegasusScannerInterface> scanners = client.getUnorderedScanners(tableName, 3, options);
+    List<PegasusScannerInterface> scanners = client.getUnorderedScanners(tableName, 1, options);
     Assert.assertTrue(scanners.size() <= 3);
 
     for (int i = scanners.size() - 1; i >= 0; i--) {
@@ -243,7 +244,7 @@ public class TestScan {
   }
 
   @Test
-  public void testAsyncScan() throws PException {
+  public void testAsyncScan() throws PException, InterruptedException {
     System.out.println("TEST asyncNext...");
 
     ScanOptions options = new ScanOptions();
@@ -310,26 +311,34 @@ public class TestScan {
   }
 
   @Test
-  public void testHashKeyFilteringScan() throws PException {
+  public void testHashKeyFilteringScan() throws PException, InterruptedException {
     System.out.println("TEST HASHKEY_FILTERING_SCAN...");
     ScanOptions options = new ScanOptions();
-    options.hashKeyFilterType = FilterType.FT_MATCH_PREFIX;
-    options.hashKeyFilterPattern = expectedHashKey.getBytes();
+    options.batchSize = 1;
+    //options.hashKeyFilterType = FilterType.FT_MATCH_PREFIX;
+    //options.hashKeyFilterPattern = expectedHashKey.getBytes();
     TreeMap<String, String> data = new TreeMap<String, String>();
-    List<PegasusScannerInterface> scanners = client.getUnorderedScanners(tableName, 1, options);
-    PegasusScannerInterface scanner = scanners.get(0);
+    PegasusScannerInterface scanner = client.getScanner("usertable", "1".getBytes(), "".getBytes(), "".getBytes(), options);
     Assert.assertNotNull(scanner);
     Pair<Pair<byte[], byte[]>, byte[]> item;
-    while ((item = scanner.next()) != null) {
-      Assert.assertArrayEquals(expectedHashKey.getBytes(), item.getLeft().getLeft());
-      checkAndPutSortMap(
+    while (true) {
+      try {
+        if ((item = scanner.next()) != null){
+          System.out.println(new String(item.getLeft().getLeft()) +":"+ new String(item.getLeft().getValue()));
+        }
+      } catch (PException e) {
+        e.printStackTrace();
+      }
+      //Thread.sleep(10000);
+      //Assert.assertArrayEquals(expectedHashKey.getBytes(), item.getLeft().getLeft());
+      /*checkAndPutSortMap(
           data,
           expectedHashKey,
           new String(item.getLeft().getRight()),
-          new String(item.getRight()));
+          new String(item.getRight()));*/
     }
-    scanner.close();
-    compareSortMap(data, base.get(expectedHashKey), expectedHashKey);
+    //scanner.close();
+   // compareSortMap(data, base.get(expectedHashKey), expectedHashKey);
   }
 
   private static void clearDatabase() throws PException {

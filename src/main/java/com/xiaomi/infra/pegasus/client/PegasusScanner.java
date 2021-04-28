@@ -78,9 +78,9 @@ public class PegasusScanner implements PegasusScannerInterface {
       return asyncNext().get(_options.timeoutMillis, TimeUnit.MILLISECONDS);
     } catch (InterruptedException e) {
       throw new PException(new ReplicationException(error_code.error_types.ERR_TIMEOUT));
-    } catch (TimeoutException e) {
-      throw new PException(new ReplicationException(error_code.error_types.ERR_TIMEOUT));
     } catch (ExecutionException e) {
+      throw new PException(e);
+    } catch (TimeoutException e) {
       throw new PException(e);
     }
   }
@@ -92,6 +92,7 @@ public class PegasusScanner implements PegasusScannerInterface {
         _promises.add(promise);
         asyncNextInternal();
       } else {
+        System.out.println("asyncNext:_promises="+ false);
         // rpc is running, callback will be executed in the callback of rpc
         _promises.add(promise);
       }
@@ -155,7 +156,12 @@ public class PegasusScanner implements PegasusScannerInterface {
             rrdb_get_scanner_operator op = (rrdb_get_scanner_operator) (clientOP);
             scan_response response = op.get_response();
             synchronized (_promisesLock) {
+              _error_retry = false;
               onRecvRpcResponse(op.rpc_error, response);
+              if (op.rpc_error.errno == error_code.error_types.ERR_SESSION_RESET) {
+                System.out.println("session is reset, wait connected!");
+                return;
+              }
               asyncNextInternal();
             }
           }
@@ -181,18 +187,21 @@ public class PegasusScanner implements PegasusScannerInterface {
         new Table.ClientOPCallback() {
           @Override
           public void onCompletion(client_operator clientOP) throws Throwable {
+            System.out.println("callback::onCompletion");
             rrdb_scan_operator op = (rrdb_scan_operator) (clientOP);
             scan_response response = op.get_response();
             synchronized (_promisesLock) {
+              System.out.println(Thread.currentThread().getName() + ":callback::startOnRecvRpcResponse");
               onRecvRpcResponse(op.rpc_error, response);
-              asyncNextInternal();
             }
           }
         };
+    System.out.println("asyncOperate:"+_gpid);
     _table.asyncOperate(op, callback, _options.timeoutMillis);
   }
 
   private void onRecvRpcResponse(error_code err, scan_response response) {
+    System.out.println(Thread.currentThread().getName() +"onRecvRpcResponse="+ err.toString() + "run=" + _rpcRunning);
     if (!_rpcRunning) {
       logger.error(
           "scan rpc haven't been started, encounter logic error, we just abandon this scan, "
@@ -204,6 +213,8 @@ public class PegasusScanner implements PegasusScannerInterface {
       return;
     }
     _rpcRunning = false;
+
+    System.out.printf("RPC:%s", err.errno.toString());
 
     if (err.errno == error_code.error_types.ERR_OK) {
       if (response.error == 0) { // ERR_OK
@@ -222,21 +233,30 @@ public class PegasusScanner implements PegasusScannerInterface {
         _encounterError = true;
         _cause = new PException("rocksDB error: " + response.error);
       }
-    } else { // rpc failed
-      _encounterError = true;
-      _cause = new PException("scan failed with error: " + err.errno);
+    } else if (err.errno != error_code.error_types.ERR_SESSION_RESET) { // rpc failed
+      System.out.printf("RPC:%s", err.errno.toString());
+     try {
+        Thread.sleep(2000);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      _error_retry = true;
+      _cause = new PException("scan failed with error: " + err.errno + " will retry again!");
     }
   }
 
   private void asyncNextInternal() {
+    System.out.println("asyncNextInternal()");
     if (_encounterError) {
       for (DefaultPromise<Pair<Pair<byte[], byte[]>, byte[]>> p : _promises) {
+        System.out.println("asyncNextInternal()::encounter");
         p.setFailure(_cause);
       }
       _promises.clear();
       // we don't reset the flag, just abandon this scan operation
       return;
     }
+    System.out.println("promiseSize:" + _promises.size());
     while (!_promises.isEmpty()) {
       while (++_readKvIter >= _kvs.size()) {
         if (_contextId == CONTEXT_ID_COMPLETED) {
@@ -265,11 +285,13 @@ public class PegasusScanner implements PegasusScannerInterface {
           _gpid = _partitions[--_partitionIter];
           _hash = _partitionHashes[_partitionIter];
           contextReset();
-        } else if (_contextId == CONTEXT_ID_NOT_EXIST) {
+        } else if (_contextId == CONTEXT_ID_NOT_EXIST || _error_retry) {
           // no valid context_id found
+          System.out.println("asyncNextInternal()::asyncStartScan");
           asyncStartScan();
           return;
         } else {
+          System.out.println("asyncNextInternal()::asyncNextBatch");
           asyncNextBatch();
           return;
         }
@@ -315,6 +337,7 @@ public class PegasusScanner implements PegasusScannerInterface {
   private boolean _needCheckHash;
   // whether scan operation got incomplete error
   private boolean _incomplete;
+  private boolean _error_retry;
 
   private static final Logger logger = org.slf4j.LoggerFactory.getLogger(PegasusScanner.class);
 }

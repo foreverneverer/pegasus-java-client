@@ -134,6 +134,7 @@ public class TableHandler extends Table {
   // update the table configuration & appID_ according to to queried response
   // there should only be one thread to do the table config update
   void initTableConfiguration(query_cfg_response resp) {
+    System.out.println(Thread.currentThread().getName() + ":initTableConfiguration");
     TableConfiguration oldConfig = tableConfig_.get();
 
     TableConfiguration newConfig = new TableConfiguration();
@@ -148,7 +149,9 @@ public class TableHandler extends Table {
 
     // create sessions for primary and secondaries
     FutureGroup<Void> futureGroup = new FutureGroup<>(resp.getPartition_count());
+    System.out.println(Thread.currentThread().getName() +" : connect config");
     for (partition_configuration pc : resp.getPartitions()) {
+      System.out.println(Thread.currentThread().getName() +" : connect config:"+ pc.primary.toString());
       ReplicaConfiguration s = newConfig.replicas.get(pc.getPid().get_pidx());
       s.ballot = pc.ballot;
 
@@ -176,6 +179,7 @@ public class TableHandler extends Table {
     // Warm up the connections during client.openTable, so RPCs thereafter can
     // skip the connect process.
     try {
+      System.out.println(Thread.currentThread().getName() + ":initTableConfigurationwaitAllCompleteOrOneFail");
       futureGroup.waitAllCompleteOrOneFail(manager_.getTimeout());
     } catch (PException e) {
       logger.warn("failed to connect with some replica servers: ", e);
@@ -184,6 +188,7 @@ public class TableHandler extends Table {
     // there should only be one thread to do the table config update
     appID_ = resp.getApp_id();
     tableConfig_.set(newConfig);
+    System.out.println(Thread.currentThread().getName() + ":initTableConfigurationOK");
   }
 
   public ReplicaSession tryConnect(final rpc_address addr, FutureGroup<Void> futureGroup) {
@@ -201,6 +206,7 @@ public class TableHandler extends Table {
   }
 
   void onUpdateConfiguration(final query_cfg_operator op) {
+    System.out.println(Thread.currentThread().getName() + ":onUpdateConfiguration");
     error_types err = MetaSession.getMetaServiceError(op);
     if (err != error_types.ERR_OK) {
       logger.warn("query meta for table({}) failed, error_code({})", tableName_, err.toString());
@@ -223,6 +229,7 @@ public class TableHandler extends Table {
   }
 
   boolean tryQueryMeta(long cachedConfigVersion) {
+    System.out.println(Thread.currentThread().getName() + ":tryQueryMeta:"+ inQuerying_);
     if (!inQuerying_.compareAndSet(false, true)) return false;
 
     long now = System.currentTimeMillis();
@@ -240,6 +247,7 @@ public class TableHandler extends Table {
     final query_cfg_operator query_op = new query_cfg_operator(new gpid(-1, -1), req);
 
     logger.info("query meta for table({}) query request", tableName_);
+
     manager_
         .getMetaSession()
         .asyncQuery(
@@ -272,6 +280,7 @@ public class TableHandler extends Table {
     client_operator operator = round.getOperator();
     interceptorManager.after(round, operator.rpc_error.errno, this);
     boolean needQueryMeta = false;
+    System.out.println("onRpcReply:" + operator.rpc_error.errno.toString());
     switch (operator.rpc_error.errno) {
       case ERR_OK:
         round.thisRoundCompletion();
@@ -332,6 +341,7 @@ public class TableHandler extends Table {
     }
 
     if (needQueryMeta) {
+      System.out.println("onRpcReply:needQueryMeta=" + needQueryMeta);
       tryQueryMeta(cachedConfigVersion);
     }
 
@@ -352,6 +362,7 @@ public class TableHandler extends Table {
     round.tryId++;
     long nanoDelay = manager_.getRetryDelay(round.timeoutMs) * 1000000L;
     if (round.expireNanoTime - System.nanoTime() > nanoDelay) {
+      System.out.println("tryDelayCall:call");
       executor_.schedule(
           new Runnable() {
             @Override
@@ -367,6 +378,7 @@ public class TableHandler extends Table {
       if (round.getOperator().rpc_error.errno == error_types.ERR_UNKNOWN) {
         round.getOperator().rpc_error.errno = error_types.ERR_TIMEOUT;
       }
+      System.out.println(Thread.currentThread().getName() + "not retry: tryDelayCall:setFailer="+ round.getOperator().rpc_error.errno.toString());
       round.thisRoundCompletion();
     }
   }
@@ -380,6 +392,7 @@ public class TableHandler extends Table {
     if (handle.primarySession != null) {
       interceptorManager.before(round, this);
       // send request to primary
+      System.out.println(Thread.currentThread().getName() + ":send:"+handle.primarySession.toString());
       handle.primarySession.asyncSend(
           round.getOperator(),
           new Runnable() {

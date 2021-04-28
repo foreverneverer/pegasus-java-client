@@ -88,6 +88,7 @@ public class MetaSession extends HostNameResolver {
   }
 
   public final void asyncQuery(client_operator op, Runnable callbackFunc, int maxQueryCount) {
+    System.out.println(Thread.currentThread().getName() + ":asyncQuery");
     if (maxQueryCount == 0) {
       maxQueryCount = defaultMaxQueryCount;
     }
@@ -142,6 +143,7 @@ public class MetaSession extends HostNameResolver {
   }
 
   void onFinishQueryMeta(final MetaRequestRound round) {
+    System.out.println(Thread.currentThread().getName() + ":onFinishQueryMeta");
     client_operator op = round.op;
 
     boolean needDelay = false;

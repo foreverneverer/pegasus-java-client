@@ -174,8 +174,10 @@ public class ReplicaSession {
    */
   public ChannelFuture tryConnect() {
     boolean needConnect = false;
+    System.out.println(Thread.currentThread() + ":tryConnect="+ address.toString() + ":" + fields.state.toString());
     synchronized (pendingSend) {
       if (fields.state == ConnState.DISCONNECTED) {
+        System.out.println(Thread.currentThread() + ":tryConnectLock="+ address.toString() + ":" + fields.state.toString());
         VolatileFields cache = new VolatileFields();
         cache.state = ConnState.CONNECTING;
         fields = cache;
@@ -190,6 +192,7 @@ public class ReplicaSession {
   }
 
   private ChannelFuture doConnect() {
+    System.out.println(Thread.currentThread() + ":doConnect="+ address.toString());
     try {
       // we will receive the channel connect event in DefaultHandler.ChannelActive
       return boot.connect(address.get_ip(), address.get_port())
@@ -242,8 +245,15 @@ public class ReplicaSession {
 
   void markSessionDisconnect() {
     VolatileFields cache = fields;
+    System.out.println("markSessionDisconnect" + ":" + cache.state.toString());
     synchronized (pendingSend) {
       if (cache.state != ConnState.DISCONNECTED) {
+      /*  cache = new VolatileFields();
+        cache.state = ConnState.DISCONNECTED;
+        cache.nettyChannel = null;
+        fields = cache;
+        System.out.println("markSessionDisconnectXXXXXXXXXXXX" + ":" + cache.state.toString());*/
+
         // NOTICE:
         // 1. when a connection is reset, the timeout response
         // is not answered in the order they query
@@ -253,13 +263,16 @@ public class ReplicaSession {
         try {
           while (!pendingSend.isEmpty()) {
             RequestEntry e = pendingSend.poll();
+            System.out.println("markSessionDisconnectAAAAAAAAAAAAAAA" + ":" + e.op.get_gpid() + ":"+cache.state.toString());
             tryNotifyFailureWithSeqID(e.sequenceId, error_types.ERR_SESSION_RESET, false);
           }
           List<RequestEntry> l = new LinkedList<RequestEntry>();
           for (Map.Entry<Integer, RequestEntry> entry : pendingResponse.entrySet()) {
+            System.out.println("markSessionDisconnectBBBBBBBBBBBBBBB" + ":" + entry.toString());
             l.add(entry.getValue());
           }
           for (RequestEntry e : l) {
+            System.out.println("markSessionDisconnectCCCCCCCCCCCCCCCC" + ":" + e.op.get_gpid());
             tryNotifyFailureWithSeqID(e.sequenceId, error_types.ERR_SESSION_RESET, false);
           }
         } catch (Exception e) {
@@ -274,6 +287,7 @@ public class ReplicaSession {
           cache.state = ConnState.DISCONNECTED;
           cache.nettyChannel = null;
           fields = cache;
+          System.out.println("markSessionDisconnectXXXXXXXXXXXX" + ":" + cache.state.toString());
         }
       } else {
         logger.warn("{}: session is closed already", name());
@@ -291,6 +305,7 @@ public class ReplicaSession {
         errno.toString(),
         isTimeoutTask);
     RequestEntry entry = pendingResponse.remove(seqID);
+    System.out.println(Thread.currentThread().getName() + ":tryNotifyFailureWithSeqID:" + entry.op.get_gpid() + ":");
     if (entry != null) {
       if (!isTimeoutTask && entry.timeoutTask != null) {
         entry.timeoutTask.cancel(true);
@@ -331,6 +346,7 @@ public class ReplicaSession {
       return;
     }
 
+    System.out.println(Thread.currentThread().getName() + ":" + entry.op.get_gpid() + ":ReplicaSession::writeStart | " + this.address.toString());
     cache
         .nettyChannel
         .writeAndFlush(entry)
@@ -338,6 +354,7 @@ public class ReplicaSession {
             new ChannelFutureListener() {
               @Override
               public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                System.out.println(Thread.currentThread().getName() + ":" + entry.op.get_gpid() + ":ReplicaSession::writeOK::"+ channelFuture.toString());
                 // NOTICE: we never do the connection things, this should be the duty of
                 // ChannelHandler, we only notify the request
                 if (!channelFuture.isSuccess()) {
@@ -425,6 +442,7 @@ public class ReplicaSession {
     @Override
     public void channelRead0(ChannelHandlerContext ctx, final RequestEntry msg) {
       logger.debug("{}: handle response with seqid({})", name(), msg.sequenceId);
+      System.out.println(Thread.currentThread().getName() + ":channelRead0:" + msg.op.get_gpid() + "callBack:" + msg.callback);
       firstRecentTimedOutMs.set(0); // This session is currently healthy.
       if (msg.callback != null) {
         msg.callback.run();
