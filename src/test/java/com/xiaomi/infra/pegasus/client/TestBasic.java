@@ -39,38 +39,38 @@ public class TestBasic {
   @Test
   public void testGenerateKey() throws PException {
     Assert.assertEquals(
-        "00010A0BFEFF", bytesToHex(new byte[] {0x00, 0x01, 0x0A, 0x0B, (byte) 0xFE, (byte) 0xFF}));
+            "00010A0BFEFF", bytesToHex(new byte[]{0x00, 0x01, 0x0A, 0x0B, (byte) 0xFE, (byte) 0xFF}));
 
     Assert.assertArrayEquals(
-        new byte[] {0x00, 0x00}, PegasusClient.generateKey(new byte[] {}, new byte[] {}));
+            new byte[]{0x00, 0x00}, PegasusClient.generateKey(new byte[]{}, new byte[]{}));
     Assert.assertArrayEquals(
-        new byte[] {0x00, 0x01, 0x44}, PegasusClient.generateKey(new byte[] {0x44}, new byte[] {}));
+            new byte[]{0x00, 0x01, 0x44}, PegasusClient.generateKey(new byte[]{0x44}, new byte[]{}));
     Assert.assertArrayEquals(
-        new byte[] {0x00, 0x00, 0x55}, PegasusClient.generateKey(new byte[] {}, new byte[] {0x55}));
+            new byte[]{0x00, 0x00, 0x55}, PegasusClient.generateKey(new byte[]{}, new byte[]{0x55}));
     Assert.assertArrayEquals(
-        new byte[] {0x00, 0x01, 0x44, 0x55},
-        PegasusClient.generateKey(new byte[] {0x44}, new byte[] {0x55}));
+            new byte[]{0x00, 0x01, 0x44, 0x55},
+            PegasusClient.generateKey(new byte[]{0x44}, new byte[]{0x55}));
     try {
-      byte[] k = PegasusClient.generateKey(new byte[64 * 1024], new byte[] {0x55});
+      byte[] k = PegasusClient.generateKey(new byte[64 * 1024], new byte[]{0x55});
       Assert.assertTrue(false);
     } catch (Exception e) {
     }
 
     Assert.assertArrayEquals(
-        new byte[] {0x00, 0x01}, PegasusClient.generateNextBytes(new byte[] {}));
+            new byte[]{0x00, 0x01}, PegasusClient.generateNextBytes(new byte[]{}));
     Assert.assertArrayEquals(
-        new byte[] {0x00, 0x01, 0x0B}, PegasusClient.generateNextBytes(new byte[] {0x0A}));
+            new byte[]{0x00, 0x01, 0x0B}, PegasusClient.generateNextBytes(new byte[]{0x0A}));
     Assert.assertArrayEquals(
-        new byte[] {0x00, 0x01, (byte) 0xFF},
-        PegasusClient.generateNextBytes(new byte[] {(byte) 0xFE}));
+            new byte[]{0x00, 0x01, (byte) 0xFF},
+            PegasusClient.generateNextBytes(new byte[]{(byte) 0xFE}));
     Assert.assertArrayEquals(
-        new byte[] {0x00, 0x02}, PegasusClient.generateNextBytes(new byte[] {(byte) 0xFF}));
+            new byte[]{0x00, 0x02}, PegasusClient.generateNextBytes(new byte[]{(byte) 0xFF}));
     Assert.assertArrayEquals(
-        new byte[] {0x00, 0x02, 0x0B},
-        PegasusClient.generateNextBytes(new byte[] {0x0A, (byte) 0xFF}));
+            new byte[]{0x00, 0x02, 0x0B},
+            PegasusClient.generateNextBytes(new byte[]{0x0A, (byte) 0xFF}));
     Assert.assertArrayEquals(
-        new byte[] {0x00, 0x03},
-        PegasusClient.generateNextBytes(new byte[] {(byte) 0xFF, (byte) 0xFF}));
+            new byte[]{0x00, 0x03},
+            PegasusClient.generateNextBytes(new byte[]{(byte) 0xFF, (byte) 0xFF}));
     try {
       byte[] k = PegasusClient.generateNextBytes(new byte[64 * 1024]);
       Assert.assertTrue(false);
@@ -78,36 +78,36 @@ public class TestBasic {
     }
 
     Assert.assertArrayEquals(
-        new byte[] {0x00, 0x01}, PegasusClient.generateNextBytes(new byte[] {}, new byte[] {}));
+            new byte[]{0x00, 0x01}, PegasusClient.generateNextBytes(new byte[]{}, new byte[]{}));
     Assert.assertArrayEquals(
-        new byte[] {0x00, 0x01, 0x45},
-        PegasusClient.generateNextBytes(new byte[] {0x44}, new byte[] {}));
+            new byte[]{0x00, 0x01, 0x45},
+            PegasusClient.generateNextBytes(new byte[]{0x44}, new byte[]{}));
     Assert.assertArrayEquals(
-        new byte[] {0x00, 0x00, 0x56},
-        PegasusClient.generateNextBytes(new byte[] {}, new byte[] {0x55}));
+            new byte[]{0x00, 0x00, 0x56},
+            PegasusClient.generateNextBytes(new byte[]{}, new byte[]{0x55}));
     Assert.assertArrayEquals(
-        new byte[] {0x00, 0x01, 0x44, 0x56},
-        PegasusClient.generateNextBytes(new byte[] {0x44}, new byte[] {0x55}));
+            new byte[]{0x00, 0x01, 0x44, 0x56},
+            PegasusClient.generateNextBytes(new byte[]{0x44}, new byte[]{0x55}));
     Assert.assertArrayEquals(
-        new byte[] {0x00, 0x01, 0x45},
-        PegasusClient.generateNextBytes(new byte[] {0x44}, new byte[] {(byte) 0xFF}));
+            new byte[]{0x00, 0x01, 0x45},
+            PegasusClient.generateNextBytes(new byte[]{0x44}, new byte[]{(byte) 0xFF}));
     Assert.assertArrayEquals(
-        new byte[] {0x00, 0x02},
-        PegasusClient.generateNextBytes(new byte[] {(byte) 0xFF}, new byte[] {}));
+            new byte[]{0x00, 0x02},
+            PegasusClient.generateNextBytes(new byte[]{(byte) 0xFF}, new byte[]{}));
     Assert.assertArrayEquals(
-        new byte[] {0x00, 0x01, (byte) 0xFF, 0x56},
-        PegasusClient.generateNextBytes(new byte[] {(byte) 0xFF}, new byte[] {0x55}));
+            new byte[]{0x00, 0x01, (byte) 0xFF, 0x56},
+            PegasusClient.generateNextBytes(new byte[]{(byte) 0xFF}, new byte[]{0x55}));
     Assert.assertArrayEquals(
-        new byte[] {0x00, 0x02},
-        PegasusClient.generateNextBytes(new byte[] {(byte) 0xFF}, new byte[] {(byte) 0xFF}));
+            new byte[]{0x00, 0x02},
+            PegasusClient.generateNextBytes(new byte[]{(byte) 0xFF}, new byte[]{(byte) 0xFF}));
     Assert.assertArrayEquals(
-        new byte[] {0x00, 0x02},
-        PegasusClient.generateNextBytes(
-            new byte[] {(byte) 0xFF}, new byte[] {(byte) 0xFF, (byte) 0xFF}));
+            new byte[]{0x00, 0x02},
+            PegasusClient.generateNextBytes(
+                    new byte[]{(byte) 0xFF}, new byte[]{(byte) 0xFF, (byte) 0xFF}));
     Assert.assertArrayEquals(
-        new byte[] {0x00, 0x03},
-        PegasusClient.generateNextBytes(
-            new byte[] {(byte) 0xFF, (byte) 0xFF}, new byte[] {(byte) 0xFF}));
+            new byte[]{0x00, 0x03},
+            PegasusClient.generateNextBytes(
+                    new byte[]{(byte) 0xFF, (byte) 0xFF}, new byte[]{(byte) 0xFF}));
     try {
       byte[] k = PegasusClient.generateNextBytes(new byte[64 * 1024], new byte[0]);
       Assert.assertTrue(false);
@@ -122,7 +122,7 @@ public class TestBasic {
     Assert.assertEquals(client, client1);
     try {
       PegasusClientInterface client2 =
-          PegasusClientFactory.getSingletonClient("resource:///xxx.properties");
+              PegasusClientFactory.getSingletonClient("resource:///xxx.properties");
       Assert.assertTrue(false);
     } catch (PException e) {
     }
@@ -138,7 +138,7 @@ public class TestBasic {
     try {
       // set
       client.set(
-          tableName, hashKey, "basic_test_sort_key_1".getBytes(), "basic_test_value_1".getBytes());
+              tableName, hashKey, "basic_test_sort_key_1".getBytes(), "basic_test_value_1".getBytes());
 
       // check exist
       boolean exist = client.exist(tableName, hashKey, "basic_test_sort_key_1".getBytes());
@@ -671,8 +671,8 @@ public class TestBasic {
       options.stopInclusive = true;
       newValues.clear();
       ret =
-          client.multiGet(
-              tableName, hashKey, "1-abcdefg".getBytes(), "2".getBytes(), options, newValues);
+              client.multiGet(
+                      tableName, hashKey, "1-abcdefg".getBytes(), "2".getBytes(), options, newValues);
       Assert.assertTrue(ret);
       Assert.assertEquals(0, newValues.size());
 
@@ -835,8 +835,8 @@ public class TestBasic {
       options = new MultiGetOptions();
       newValues.clear();
       ret =
-          client.multiGet(
-              tableName, hashKey, "5".getBytes(), "6".getBytes(), options, 1, -1, newValues);
+              client.multiGet(
+                      tableName, hashKey, "5".getBytes(), "6".getBytes(), options, 1, -1, newValues);
       Assert.assertFalse(ret);
       Assert.assertEquals(1, newValues.size());
       Assert.assertArrayEquals("5".getBytes(), newValues.get(0).getKey());
@@ -1205,8 +1205,8 @@ public class TestBasic {
       options.reverse = true;
       newValues.clear();
       ret =
-          client.multiGet(
-              tableName, hashKey, "1-abcdefg".getBytes(), "2".getBytes(), options, newValues);
+              client.multiGet(
+                      tableName, hashKey, "1-abcdefg".getBytes(), "2".getBytes(), options, newValues);
       Assert.assertTrue(ret);
       Assert.assertEquals(0, newValues.size());
 
@@ -1388,8 +1388,8 @@ public class TestBasic {
       options.reverse = true;
       newValues.clear();
       ret =
-          client.multiGet(
-              tableName, hashKey, "5".getBytes(), "6".getBytes(), options, 1, -1, newValues);
+              client.multiGet(
+                      tableName, hashKey, "5".getBytes(), "6".getBytes(), options, 1, -1, newValues);
       Assert.assertFalse(ret);
       Assert.assertEquals(1, newValues.size());
       Assert.assertArrayEquals("6".getBytes(), newValues.get(0).getKey());
@@ -1431,56 +1431,56 @@ public class TestBasic {
       // batch set
       List<SetItem> items = new ArrayList<SetItem>();
       items.add(
-          new SetItem(
-              "TestBasic_testBatchSetGetDel_hash_key_1".getBytes(),
-              "basic_test_sort_key".getBytes(),
-              "basic_test_value_1".getBytes()));
+              new SetItem(
+                      "TestBasic_testBatchSetGetDel_hash_key_1".getBytes(),
+                      "basic_test_sort_key".getBytes(),
+                      "basic_test_value_1".getBytes()));
       items.add(
-          new SetItem(
-              "TestBasic_testBatchSetGetDel_hash_key_2".getBytes(),
-              "basic_test_sort_key".getBytes(),
-              "basic_test_value_2".getBytes()));
+              new SetItem(
+                      "TestBasic_testBatchSetGetDel_hash_key_2".getBytes(),
+                      "basic_test_sort_key".getBytes(),
+                      "basic_test_value_2".getBytes()));
       items.add(
-          new SetItem(
-              "TestBasic_testBatchSetGetDel_hash_key_3".getBytes(),
-              "basic_test_sort_key".getBytes(),
-              "basic_test_value_3".getBytes()));
+              new SetItem(
+                      "TestBasic_testBatchSetGetDel_hash_key_3".getBytes(),
+                      "basic_test_sort_key".getBytes(),
+                      "basic_test_value_3".getBytes()));
       client.batchSet(tableName, items);
 
       // check exist
       boolean exist =
-          client.exist(
-              tableName,
-              "TestBasic_testBatchSetGetDel_hash_key_1".getBytes(),
-              "basic_test_sort_key".getBytes());
+              client.exist(
+                      tableName,
+                      "TestBasic_testBatchSetGetDel_hash_key_1".getBytes(),
+                      "basic_test_sort_key".getBytes());
       Assert.assertTrue(exist);
       exist =
-          client.exist(
-              tableName,
-              "TestBasic_testBatchSetGetDel_hash_key_2".getBytes(),
-              "basic_test_sort_key".getBytes());
+              client.exist(
+                      tableName,
+                      "TestBasic_testBatchSetGetDel_hash_key_2".getBytes(),
+                      "basic_test_sort_key".getBytes());
       Assert.assertTrue(exist);
       exist =
-          client.exist(
-              tableName,
-              "TestBasic_testBatchSetGetDel_hash_key_3".getBytes(),
-              "basic_test_sort_key".getBytes());
+              client.exist(
+                      tableName,
+                      "TestBasic_testBatchSetGetDel_hash_key_3".getBytes(),
+                      "basic_test_sort_key".getBytes());
       Assert.assertTrue(exist);
 
       // batch get
       List<Pair<byte[], byte[]>> keys = new ArrayList<Pair<byte[], byte[]>>();
       keys.add(
-          Pair.of(
-              "TestBasic_testBatchSetGetDel_hash_key_1".getBytes(),
-              "basic_test_sort_key".getBytes()));
+              Pair.of(
+                      "TestBasic_testBatchSetGetDel_hash_key_1".getBytes(),
+                      "basic_test_sort_key".getBytes()));
       keys.add(
-          Pair.of(
-              "TestBasic_testBatchSetGetDel_hash_key_2".getBytes(),
-              "basic_test_sort_key".getBytes()));
+              Pair.of(
+                      "TestBasic_testBatchSetGetDel_hash_key_2".getBytes(),
+                      "basic_test_sort_key".getBytes()));
       keys.add(
-          Pair.of(
-              "TestBasic_testBatchSetGetDel_hash_key_3".getBytes(),
-              "basic_test_sort_key".getBytes()));
+              Pair.of(
+                      "TestBasic_testBatchSetGetDel_hash_key_3".getBytes(),
+                      "basic_test_sort_key".getBytes()));
       List<byte[]> values = new ArrayList<byte[]>();
       client.batchGet(tableName, keys, values);
       Assert.assertEquals(3, values.size());
@@ -1514,20 +1514,20 @@ public class TestBasic {
       // batch set
       List<SetItem> items = new ArrayList<SetItem>();
       items.add(
-          new SetItem(
-              "TestBasic_testBatchSetGetDel2_hash_key_1".getBytes(),
-              "basic_test_sort_key".getBytes(),
-              "basic_test_value_1".getBytes()));
+              new SetItem(
+                      "TestBasic_testBatchSetGetDel2_hash_key_1".getBytes(),
+                      "basic_test_sort_key".getBytes(),
+                      "basic_test_value_1".getBytes()));
       items.add(
-          new SetItem(
-              "TestBasic_testBatchSetGetDel2_hash_key_2".getBytes(),
-              "basic_test_sort_key".getBytes(),
-              "basic_test_value_2".getBytes()));
+              new SetItem(
+                      "TestBasic_testBatchSetGetDel2_hash_key_2".getBytes(),
+                      "basic_test_sort_key".getBytes(),
+                      "basic_test_value_2".getBytes()));
       items.add(
-          new SetItem(
-              "TestBasic_testBatchSetGetDel2_hash_key_3".getBytes(),
-              "basic_test_sort_key".getBytes(),
-              "basic_test_value_3".getBytes()));
+              new SetItem(
+                      "TestBasic_testBatchSetGetDel2_hash_key_3".getBytes(),
+                      "basic_test_sort_key".getBytes(),
+                      "basic_test_value_3".getBytes()));
       List<PException> resultsBatchSet = new ArrayList<PException>();
       int count = client.batchSet2(tableName, items, resultsBatchSet);
       Assert.assertEquals(3, count);
@@ -1538,38 +1538,38 @@ public class TestBasic {
 
       // check exist
       boolean exist =
-          client.exist(
-              tableName,
-              "TestBasic_testBatchSetGetDel2_hash_key_1".getBytes(),
-              "basic_test_sort_key".getBytes());
+              client.exist(
+                      tableName,
+                      "TestBasic_testBatchSetGetDel2_hash_key_1".getBytes(),
+                      "basic_test_sort_key".getBytes());
       Assert.assertTrue(exist);
       exist =
-          client.exist(
-              tableName,
-              "TestBasic_testBatchSetGetDel2_hash_key_2".getBytes(),
-              "basic_test_sort_key".getBytes());
+              client.exist(
+                      tableName,
+                      "TestBasic_testBatchSetGetDel2_hash_key_2".getBytes(),
+                      "basic_test_sort_key".getBytes());
       Assert.assertTrue(exist);
       exist =
-          client.exist(
-              tableName,
-              "TestBasic_testBatchSetGetDel2_hash_key_3".getBytes(),
-              "basic_test_sort_key".getBytes());
+              client.exist(
+                      tableName,
+                      "TestBasic_testBatchSetGetDel2_hash_key_3".getBytes(),
+                      "basic_test_sort_key".getBytes());
       Assert.assertTrue(exist);
 
       // batch get
       List<Pair<byte[], byte[]>> keys = new ArrayList<Pair<byte[], byte[]>>();
       keys.add(
-          Pair.of(
-              "TestBasic_testBatchSetGetDel2_hash_key_1".getBytes(),
-              "basic_test_sort_key".getBytes()));
+              Pair.of(
+                      "TestBasic_testBatchSetGetDel2_hash_key_1".getBytes(),
+                      "basic_test_sort_key".getBytes()));
       keys.add(
-          Pair.of(
-              "TestBasic_testBatchSetGetDel2_hash_key_2".getBytes(),
-              "basic_test_sort_key".getBytes()));
+              Pair.of(
+                      "TestBasic_testBatchSetGetDel2_hash_key_2".getBytes(),
+                      "basic_test_sort_key".getBytes()));
       keys.add(
-          Pair.of(
-              "TestBasic_testBatchSetGetDel2_hash_key_3".getBytes(),
-              "basic_test_sort_key".getBytes()));
+              Pair.of(
+                      "TestBasic_testBatchSetGetDel2_hash_key_3".getBytes(),
+                      "basic_test_sort_key".getBytes()));
       List<Pair<PException, byte[]>> resultsBatchGet = new ArrayList<Pair<PException, byte[]>>();
       count = client.batchGet2(tableName, keys, resultsBatchGet);
       Assert.assertEquals(3, count);
@@ -1615,25 +1615,25 @@ public class TestBasic {
       List<HashKeyData> items = new ArrayList<HashKeyData>();
       items.add(new HashKeyData("TestBasic_testBatchMultiSetGetDel_hash_key_1".getBytes()));
       items
-          .get(items.size() - 1)
-          .addData("basic_test_sort_key_1".getBytes(), "basic_test_value_1".getBytes());
+              .get(items.size() - 1)
+              .addData("basic_test_sort_key_1".getBytes(), "basic_test_value_1".getBytes());
       items
-          .get(items.size() - 1)
-          .addData("basic_test_sort_key_2".getBytes(), "basic_test_value_2".getBytes());
+              .get(items.size() - 1)
+              .addData("basic_test_sort_key_2".getBytes(), "basic_test_value_2".getBytes());
       items
-          .get(items.size() - 1)
-          .addData("basic_test_sort_key_3".getBytes(), "basic_test_value_3".getBytes());
+              .get(items.size() - 1)
+              .addData("basic_test_sort_key_3".getBytes(), "basic_test_value_3".getBytes());
       items.add(new HashKeyData("TestBasic_testBatchMultiSetGetDel_hash_key_2".getBytes()));
       items
-          .get(items.size() - 1)
-          .addData("basic_test_sort_key_1".getBytes(), "basic_test_value_1".getBytes());
+              .get(items.size() - 1)
+              .addData("basic_test_sort_key_1".getBytes(), "basic_test_value_1".getBytes());
       items
-          .get(items.size() - 1)
-          .addData("basic_test_sort_key_2".getBytes(), "basic_test_value_2".getBytes());
+              .get(items.size() - 1)
+              .addData("basic_test_sort_key_2".getBytes(), "basic_test_value_2".getBytes());
       items.add(new HashKeyData("TestBasic_testBatchMultiSetGetDel_hash_key_3".getBytes()));
       items
-          .get(items.size() - 1)
-          .addData("basic_test_sort_key_1".getBytes(), "basic_test_value_1".getBytes());
+              .get(items.size() - 1)
+              .addData("basic_test_sort_key_1".getBytes(), "basic_test_value_1".getBytes());
       client.batchMultiSet(tableName, items);
 
       // batch multi get
@@ -1651,37 +1651,37 @@ public class TestBasic {
       Assert.assertArrayEquals(keys.get(0).getLeft(), values.get(0).hashKey);
       Assert.assertEquals(3, values.get(0).values.size());
       Assert.assertArrayEquals(
-          "basic_test_sort_key_1".getBytes(), values.get(0).values.get(0).getLeft());
+              "basic_test_sort_key_1".getBytes(), values.get(0).values.get(0).getLeft());
       Assert.assertArrayEquals(
-          "basic_test_value_1".getBytes(), values.get(0).values.get(0).getRight());
+              "basic_test_value_1".getBytes(), values.get(0).values.get(0).getRight());
       Assert.assertArrayEquals(
-          "basic_test_sort_key_2".getBytes(), values.get(0).values.get(1).getLeft());
+              "basic_test_sort_key_2".getBytes(), values.get(0).values.get(1).getLeft());
       Assert.assertArrayEquals(
-          "basic_test_value_2".getBytes(), values.get(0).values.get(1).getRight());
+              "basic_test_value_2".getBytes(), values.get(0).values.get(1).getRight());
       Assert.assertArrayEquals(
-          "basic_test_sort_key_3".getBytes(), values.get(0).values.get(2).getLeft());
+              "basic_test_sort_key_3".getBytes(), values.get(0).values.get(2).getLeft());
       Assert.assertArrayEquals(
-          "basic_test_value_3".getBytes(), values.get(0).values.get(2).getRight());
+              "basic_test_value_3".getBytes(), values.get(0).values.get(2).getRight());
 
       Assert.assertTrue(values.get(1).allFetched);
       Assert.assertArrayEquals(keys.get(1).getLeft(), values.get(1).hashKey);
       Assert.assertEquals(2, values.get(1).values.size());
       Assert.assertArrayEquals(
-          "basic_test_sort_key_1".getBytes(), values.get(1).values.get(0).getLeft());
+              "basic_test_sort_key_1".getBytes(), values.get(1).values.get(0).getLeft());
       Assert.assertArrayEquals(
-          "basic_test_value_1".getBytes(), values.get(1).values.get(0).getRight());
+              "basic_test_value_1".getBytes(), values.get(1).values.get(0).getRight());
       Assert.assertArrayEquals(
-          "basic_test_sort_key_2".getBytes(), values.get(1).values.get(1).getLeft());
+              "basic_test_sort_key_2".getBytes(), values.get(1).values.get(1).getLeft());
       Assert.assertArrayEquals(
-          "basic_test_value_2".getBytes(), values.get(1).values.get(1).getRight());
+              "basic_test_value_2".getBytes(), values.get(1).values.get(1).getRight());
 
       Assert.assertTrue(values.get(2).allFetched);
       Assert.assertArrayEquals(keys.get(2).getLeft(), values.get(2).hashKey);
       Assert.assertEquals(1, values.get(2).values.size());
       Assert.assertArrayEquals(
-          "basic_test_sort_key_1".getBytes(), values.get(2).values.get(0).getLeft());
+              "basic_test_sort_key_1".getBytes(), values.get(2).values.get(0).getLeft());
       Assert.assertArrayEquals(
-          "basic_test_value_1".getBytes(), values.get(2).values.get(0).getRight());
+              "basic_test_value_1".getBytes(), values.get(2).values.get(0).getRight());
 
       Assert.assertTrue(values.get(3).allFetched);
       Assert.assertArrayEquals(keys.get(3).getLeft(), values.get(3).hashKey);
@@ -1724,25 +1724,25 @@ public class TestBasic {
       List<HashKeyData> items = new ArrayList<HashKeyData>();
       items.add(new HashKeyData("TestBasic_testBatchMultiSetGetDel2_hash_key_1".getBytes()));
       items
-          .get(items.size() - 1)
-          .addData("basic_test_sort_key_1".getBytes(), "basic_test_value_1".getBytes());
+              .get(items.size() - 1)
+              .addData("basic_test_sort_key_1".getBytes(), "basic_test_value_1".getBytes());
       items
-          .get(items.size() - 1)
-          .addData("basic_test_sort_key_2".getBytes(), "basic_test_value_2".getBytes());
+              .get(items.size() - 1)
+              .addData("basic_test_sort_key_2".getBytes(), "basic_test_value_2".getBytes());
       items
-          .get(items.size() - 1)
-          .addData("basic_test_sort_key_3".getBytes(), "basic_test_value_3".getBytes());
+              .get(items.size() - 1)
+              .addData("basic_test_sort_key_3".getBytes(), "basic_test_value_3".getBytes());
       items.add(new HashKeyData("TestBasic_testBatchMultiSetGetDel2_hash_key_2".getBytes()));
       items
-          .get(items.size() - 1)
-          .addData("basic_test_sort_key_1".getBytes(), "basic_test_value_1".getBytes());
+              .get(items.size() - 1)
+              .addData("basic_test_sort_key_1".getBytes(), "basic_test_value_1".getBytes());
       items
-          .get(items.size() - 1)
-          .addData("basic_test_sort_key_2".getBytes(), "basic_test_value_2".getBytes());
+              .get(items.size() - 1)
+              .addData("basic_test_sort_key_2".getBytes(), "basic_test_value_2".getBytes());
       items.add(new HashKeyData("TestBasic_testBatchMultiSetGetDel2_hash_key_3".getBytes()));
       items
-          .get(items.size() - 1)
-          .addData("basic_test_sort_key_1".getBytes(), "basic_test_value_1".getBytes());
+              .get(items.size() - 1)
+              .addData("basic_test_sort_key_1".getBytes(), "basic_test_value_1".getBytes());
       List<PException> resultsBatchMultiSet = new ArrayList<PException>();
       int count = client.batchMultiSet2(tableName, items, resultsBatchMultiSet);
       Assert.assertEquals(3, count);
@@ -1759,65 +1759,65 @@ public class TestBasic {
       keys.add(Pair.of("TestBasic_testBatchMultiSetGetDel2_hash_key_3".getBytes(), nullSortKeys));
       keys.add(Pair.of("TestBasic_testBatchMultiSetGetDel2_hash_key_4".getBytes(), nullSortKeys));
       List<Pair<PException, HashKeyData>> resultsBatchMultiGet =
-          new ArrayList<Pair<PException, HashKeyData>>();
+              new ArrayList<Pair<PException, HashKeyData>>();
       count = client.batchMultiGet2(tableName, keys, resultsBatchMultiGet);
       Assert.assertEquals(4, count);
       Assert.assertEquals(4, resultsBatchMultiGet.size());
 
       Assert.assertNull(resultsBatchMultiGet.get(0).getLeft());
       Assert.assertArrayEquals(
-          keys.get(0).getLeft(), resultsBatchMultiGet.get(0).getRight().hashKey);
+              keys.get(0).getLeft(), resultsBatchMultiGet.get(0).getRight().hashKey);
       Assert.assertEquals(3, resultsBatchMultiGet.get(0).getRight().values.size());
       Assert.assertArrayEquals(
-          "basic_test_sort_key_1".getBytes(),
-          resultsBatchMultiGet.get(0).getRight().values.get(0).getLeft());
+              "basic_test_sort_key_1".getBytes(),
+              resultsBatchMultiGet.get(0).getRight().values.get(0).getLeft());
       Assert.assertArrayEquals(
-          "basic_test_value_1".getBytes(),
-          resultsBatchMultiGet.get(0).getRight().values.get(0).getRight());
+              "basic_test_value_1".getBytes(),
+              resultsBatchMultiGet.get(0).getRight().values.get(0).getRight());
       Assert.assertArrayEquals(
-          "basic_test_sort_key_2".getBytes(),
-          resultsBatchMultiGet.get(0).getRight().values.get(1).getLeft());
+              "basic_test_sort_key_2".getBytes(),
+              resultsBatchMultiGet.get(0).getRight().values.get(1).getLeft());
       Assert.assertArrayEquals(
-          "basic_test_value_2".getBytes(),
-          resultsBatchMultiGet.get(0).getRight().values.get(1).getRight());
+              "basic_test_value_2".getBytes(),
+              resultsBatchMultiGet.get(0).getRight().values.get(1).getRight());
       Assert.assertArrayEquals(
-          "basic_test_sort_key_3".getBytes(),
-          resultsBatchMultiGet.get(0).getRight().values.get(2).getLeft());
+              "basic_test_sort_key_3".getBytes(),
+              resultsBatchMultiGet.get(0).getRight().values.get(2).getLeft());
       Assert.assertArrayEquals(
-          "basic_test_value_3".getBytes(),
-          resultsBatchMultiGet.get(0).getRight().values.get(2).getRight());
+              "basic_test_value_3".getBytes(),
+              resultsBatchMultiGet.get(0).getRight().values.get(2).getRight());
 
       Assert.assertNull(resultsBatchMultiGet.get(1).getLeft());
       Assert.assertArrayEquals(
-          keys.get(1).getLeft(), resultsBatchMultiGet.get(1).getRight().hashKey);
+              keys.get(1).getLeft(), resultsBatchMultiGet.get(1).getRight().hashKey);
       Assert.assertEquals(2, resultsBatchMultiGet.get(1).getRight().values.size());
       Assert.assertArrayEquals(
-          "basic_test_sort_key_1".getBytes(),
-          resultsBatchMultiGet.get(1).getRight().values.get(0).getLeft());
+              "basic_test_sort_key_1".getBytes(),
+              resultsBatchMultiGet.get(1).getRight().values.get(0).getLeft());
       Assert.assertArrayEquals(
-          "basic_test_value_1".getBytes(),
-          resultsBatchMultiGet.get(1).getRight().values.get(0).getRight());
+              "basic_test_value_1".getBytes(),
+              resultsBatchMultiGet.get(1).getRight().values.get(0).getRight());
       Assert.assertArrayEquals(
-          "basic_test_sort_key_2".getBytes(),
-          resultsBatchMultiGet.get(1).getRight().values.get(1).getLeft());
+              "basic_test_sort_key_2".getBytes(),
+              resultsBatchMultiGet.get(1).getRight().values.get(1).getLeft());
       Assert.assertArrayEquals(
-          "basic_test_value_2".getBytes(),
-          resultsBatchMultiGet.get(1).getRight().values.get(1).getRight());
+              "basic_test_value_2".getBytes(),
+              resultsBatchMultiGet.get(1).getRight().values.get(1).getRight());
 
       Assert.assertNull(resultsBatchMultiGet.get(2).getLeft());
       Assert.assertArrayEquals(
-          keys.get(2).getLeft(), resultsBatchMultiGet.get(2).getRight().hashKey);
+              keys.get(2).getLeft(), resultsBatchMultiGet.get(2).getRight().hashKey);
       Assert.assertEquals(1, resultsBatchMultiGet.get(2).getRight().values.size());
       Assert.assertArrayEquals(
-          "basic_test_sort_key_1".getBytes(),
-          resultsBatchMultiGet.get(2).getRight().values.get(0).getLeft());
+              "basic_test_sort_key_1".getBytes(),
+              resultsBatchMultiGet.get(2).getRight().values.get(0).getLeft());
       Assert.assertArrayEquals(
-          "basic_test_value_1".getBytes(),
-          resultsBatchMultiGet.get(2).getRight().values.get(0).getRight());
+              "basic_test_value_1".getBytes(),
+              resultsBatchMultiGet.get(2).getRight().values.get(0).getRight());
 
       Assert.assertNull(resultsBatchMultiGet.get(3).getLeft());
       Assert.assertArrayEquals(
-          keys.get(3).getLeft(), resultsBatchMultiGet.get(3).getRight().hashKey);
+              keys.get(3).getLeft(), resultsBatchMultiGet.get(3).getRight().hashKey);
       Assert.assertEquals(0, resultsBatchMultiGet.get(3).getRight().values.size());
 
       // batch multi del
@@ -1878,7 +1878,7 @@ public class TestBasic {
 
     try {
       Assert.assertNull(
-          tb.asyncSet(key.getBytes(), key.getBytes(), key.getBytes(), 0).await().getNow());
+              tb.asyncSet(key.getBytes(), key.getBytes(), key.getBytes(), 0).await().getNow());
       Assert.assertTrue(tb.asyncExist(key.getBytes(), key.getBytes(), 0).await().getNow());
     } catch (Throwable e) {
       e.printStackTrace();
@@ -1912,9 +1912,9 @@ public class TestBasic {
       Assert.assertNull(tb.asyncGet(key.getBytes(), key.getBytes(), 0).await().getNow());
 
       Assert.assertNull(
-          tb.asyncSet(key.getBytes(), key.getBytes(), key.getBytes(), 0).await().getNow());
+              tb.asyncSet(key.getBytes(), key.getBytes(), key.getBytes(), 0).await().getNow());
       Assert.assertArrayEquals(
-          key.getBytes(), tb.asyncGet(key.getBytes(), key.getBytes(), 0).await().getNow());
+              key.getBytes(), tb.asyncGet(key.getBytes(), key.getBytes(), 0).await().getNow());
 
       Assert.assertNull(tb.asyncDel(key.getBytes(), key.getBytes(), 0).await().getNow());
     } catch (Throwable e) {
@@ -1926,9 +1926,9 @@ public class TestBasic {
     System.out.println("Test set & ttl");
     try {
       Assert.assertNull(
-          tb.asyncSet(key.getBytes(), key.getBytes(), key.getBytes(), 5, 0).await().getNow());
+              tb.asyncSet(key.getBytes(), key.getBytes(), key.getBytes(), 5, 0).await().getNow());
       Assert.assertArrayEquals(
-          key.getBytes(), tb.asyncGet(key.getBytes(), key.getBytes(), 0).await().getNow());
+              key.getBytes(), tb.asyncGet(key.getBytes(), key.getBytes(), 0).await().getNow());
 
       Integer ttlSeconds = tb.asyncTTL(key.getBytes(), key.getBytes(), 0).await().getNow();
       Assert.assertEquals(5, (int) ttlSeconds);
@@ -2004,7 +2004,7 @@ public class TestBasic {
         String sortKey = asyncSortPrefix + "_" + formatted;
         String value = asyncValuePrefix + "_" + formatted;
         Future<Void> f =
-            tb.asyncSet(asyncHashPrefix.getBytes(), sortKey.getBytes(), value.getBytes(), 0, 0);
+                tb.asyncSet(asyncHashPrefix.getBytes(), sortKey.getBytes(), value.getBytes(), 0, 0);
         fl.add(f);
       }
 
@@ -2017,7 +2017,7 @@ public class TestBasic {
       Assert.assertEquals(totalNumber, (long) sortCount);
 
       PegasusTableInterface.MultiGetSortKeysResult result =
-          tb.asyncMultiGetSortKeys(asyncHashPrefix.getBytes(), 150, 1000000, 0).await().getNow();
+              tb.asyncMultiGetSortKeys(asyncHashPrefix.getBytes(), 150, 1000000, 0).await().getNow();
       Assert.assertEquals(totalNumber, result.keys.size());
 
       ArrayList<Future<byte[]>> fl2 = new ArrayList<Future<byte[]>>();
@@ -2063,17 +2063,17 @@ public class TestBasic {
 
     Future<Void> f = table.asyncSet(null, null, null, 0);
     f.addListener(
-        new PegasusTableInterface.SetListener() {
-          @Override
-          public void operationComplete(Future<Void> future) throws Exception {
-            if (future.isSuccess()) {
-              System.out.println("set succeed");
-              Assert.fail();
-            } else {
-              assert future.cause() instanceof PException;
-            }
-          }
-        });
+            new PegasusTableInterface.SetListener() {
+              @Override
+              public void operationComplete(Future<Void> future) throws Exception {
+                if (future.isSuccess()) {
+                  System.out.println("set succeed");
+                  Assert.fail();
+                } else {
+                  assert future.cause() instanceof PException;
+                }
+              }
+            });
     f.awaitUninterruptibly();
   }
 
@@ -2270,10 +2270,10 @@ public class TestBasic {
     try {
       client = PegasusClientFactory.createClient(clientOptions);
       client.set(
-          "temp",
-          "createClient".getBytes(),
-          "createClient_0".getBytes(),
-          "createClient_0".getBytes());
+              "temp",
+              "createClient".getBytes(),
+              "createClient_0".getBytes(),
+              "createClient_0".getBytes());
       value = client.get("temp", "createClient".getBytes(), "createClient_0".getBytes());
     } catch (Exception e) {
       e.printStackTrace();
@@ -2287,12 +2287,12 @@ public class TestBasic {
     try {
       singletonClient = PegasusClientFactory.getSingletonClient(clientOptions);
       singletonClient.set(
-          "temp",
-          "getSingletonClient".getBytes(),
-          "createClient_1".getBytes(),
-          "createClient_1".getBytes());
+              "temp",
+              "getSingletonClient".getBytes(),
+              "createClient_1".getBytes(),
+              "createClient_1".getBytes());
       value =
-          singletonClient.get("temp", "getSingletonClient".getBytes(), "createClient_1".getBytes());
+              singletonClient.get("temp", "getSingletonClient".getBytes(), "createClient_1".getBytes());
     } catch (Exception e) {
       e.printStackTrace();
       Assert.assertTrue(false);
@@ -2305,13 +2305,13 @@ public class TestBasic {
     try {
       singletonClient1 = PegasusClientFactory.getSingletonClient(clientOptions);
       singletonClient1.set(
-          "temp",
-          "getSingletonClient".getBytes(),
-          "createClient_2".getBytes(),
-          "createClient_2".getBytes());
+              "temp",
+              "getSingletonClient".getBytes(),
+              "createClient_2".getBytes(),
+              "createClient_2".getBytes());
       value =
-          singletonClient1.get(
-              "temp", "getSingletonClient".getBytes(), "createClient_2".getBytes());
+              singletonClient1.get(
+                      "temp", "getSingletonClient".getBytes(), "createClient_2".getBytes());
     } catch (Exception e) {
       e.printStackTrace();
       Assert.assertTrue(false);
@@ -2326,13 +2326,13 @@ public class TestBasic {
     try {
       singletonClient1 = PegasusClientFactory.getSingletonClient(clientOptions1);
       singletonClient1.set(
-          "temp",
-          "getSingletonClient".getBytes(),
-          "createClient_3".getBytes(),
-          "createClient_3".getBytes());
+              "temp",
+              "getSingletonClient".getBytes(),
+              "createClient_3".getBytes(),
+              "createClient_3".getBytes());
       value =
-          singletonClient1.get(
-              "temp", "getSingletonClient".getBytes(), "createClient_3".getBytes());
+              singletonClient1.get(
+                      "temp", "getSingletonClient".getBytes(), "createClient_3".getBytes());
     } catch (Exception e) {
       e.printStackTrace();
       Assert.assertTrue(false);
@@ -2344,20 +2344,20 @@ public class TestBasic {
     // test getSingletonClient(ClientOptions options) --> different clientOptions,and values of
     // clientOptions is different
     ClientOptions clientOptions2 =
-        ClientOptions.builder()
-            .metaServers("127.0.0.1:34601,127.0.0.1:34602,127.0.0.1:34603")
-            .asyncWorkers(5) // default value is 4,this set different value
-            .build();
+            ClientOptions.builder()
+                    .metaServers("127.0.0.1:34601,127.0.0.1:34602,127.0.0.1:34603")
+                    .asyncWorkers(5) // default value is 4,this set different value
+                    .build();
     try {
       singletonClient1 = PegasusClientFactory.getSingletonClient(clientOptions2);
       singletonClient1.set(
-          "temp",
-          "getSingletonClient".getBytes(),
-          "createClient_4".getBytes(),
-          "createClient_4".getBytes());
+              "temp",
+              "getSingletonClient".getBytes(),
+              "createClient_4".getBytes(),
+              "createClient_4".getBytes());
       value =
-          singletonClient1.get(
-              "temp", "getSingletonClient".getBytes(), "createClient_4".getBytes());
+              singletonClient1.get(
+                      "temp", "getSingletonClient".getBytes(), "createClient_4".getBytes());
     } catch (Exception e) {
       // if values of clientOptions is different,the code's right logic is "throw exception"
       Assert.assertTrue(true);
@@ -2385,30 +2385,30 @@ public class TestBasic {
     List<Pair<byte[], byte[]>> remainingValue = new ArrayList<Pair<byte[], byte[]>>();
 
     Assertions.assertNull(
-        Assertions.assertDoesNotThrow(
-            () -> {
-              client.multiSet(tableName, "delRange".getBytes(), values);
-              client.delRange(
-                  tableName,
-                  "delRange".getBytes(),
-                  "k_0".getBytes(),
-                  "k_90".getBytes(),
-                  delRangeOptions);
+            Assertions.assertDoesNotThrow(
+                    () -> {
+                      client.multiSet(tableName, "delRange".getBytes(), values);
+                      client.delRange(
+                              tableName,
+                              "delRange".getBytes(),
+                              "k_0".getBytes(),
+                              "k_90".getBytes(),
+                              delRangeOptions);
 
-              remainingSortKey.add("k_90".getBytes());
-              remainingSortKey.add("k_91".getBytes());
-              remainingSortKey.add("k_92".getBytes());
-              remainingSortKey.add("k_93".getBytes());
-              remainingSortKey.add("k_94".getBytes());
-              remainingSortKey.add("k_95".getBytes());
-              remainingSortKey.add("k_96".getBytes());
-              remainingSortKey.add("k_97".getBytes());
-              remainingSortKey.add("k_98".getBytes());
-              remainingSortKey.add("k_99".getBytes());
-              client.multiGet(tableName, "delRange".getBytes(), remainingSortKey, remainingValue);
+                      remainingSortKey.add("k_90".getBytes());
+                      remainingSortKey.add("k_91".getBytes());
+                      remainingSortKey.add("k_92".getBytes());
+                      remainingSortKey.add("k_93".getBytes());
+                      remainingSortKey.add("k_94".getBytes());
+                      remainingSortKey.add("k_95".getBytes());
+                      remainingSortKey.add("k_96".getBytes());
+                      remainingSortKey.add("k_97".getBytes());
+                      remainingSortKey.add("k_98".getBytes());
+                      remainingSortKey.add("k_99".getBytes());
+                      client.multiGet(tableName, "delRange".getBytes(), remainingSortKey, remainingValue);
 
-              return delRangeOptions.nextSortKey;
-            }));
+                      return delRangeOptions.nextSortKey;
+                    }));
 
     List<String> valueStr = new ArrayList<String>();
     for (Pair<byte[], byte[]> pair : remainingValue) {
@@ -2433,15 +2433,15 @@ public class TestBasic {
     delRangeOptions.sortKeyFilterPattern = "k_93".getBytes();
 
     Assertions.assertDoesNotThrow(
-        () -> {
-          client.delRange(
-              tableName,
-              "delRange".getBytes(),
-              "k_90".getBytes(),
-              "k_95".getBytes(),
-              delRangeOptions);
-          client.multiGet(tableName, "delRange".getBytes(), remainingSortKey, remainingValue);
-        });
+            () -> {
+              client.delRange(
+                      tableName,
+                      "delRange".getBytes(),
+                      "k_90".getBytes(),
+                      "k_95".getBytes(),
+                      delRangeOptions);
+              client.multiGet(tableName, "delRange".getBytes(), remainingSortKey, remainingValue);
+            });
     for (Pair<byte[], byte[]> pair : remainingValue) {
       valueStr.add(new String(pair.getValue()));
     }
@@ -2456,15 +2456,15 @@ public class TestBasic {
     delRangeOptions.sortKeyFilterType = FilterType.FT_NO_FILTER;
     delRangeOptions.sortKeyFilterPattern = null;
     Assertions.assertDoesNotThrow(
-        () -> {
-          client.delRange(
-              tableName,
-              "delRange".getBytes(),
-              "k_90".getBytes(),
-              "k_95".getBytes(),
-              delRangeOptions);
-          client.multiGet(tableName, "delRange".getBytes(), remainingSortKey, remainingValue);
-        });
+            () -> {
+              client.delRange(
+                      tableName,
+                      "delRange".getBytes(),
+                      "k_90".getBytes(),
+                      "k_95".getBytes(),
+                      delRangeOptions);
+              client.multiGet(tableName, "delRange".getBytes(), remainingSortKey, remainingValue);
+            });
 
     for (Pair<byte[], byte[]> pair : remainingValue) {
       valueStr.add(new String(pair.getValue()));
@@ -2482,34 +2482,34 @@ public class TestBasic {
     DelRangeOptions delRangeOptions2 = new DelRangeOptions();
     // test hashKey can't be null or ""
     Assertions.assertEquals(
-        "{version}: Invalid parameter: hash key can't be empty",
-        Assertions.assertThrows(
-                PException.class,
-                () -> {
-                  client.delRange(
-                      tableName, null, "k1".getBytes(), "k2".getBytes(), delRangeOptions2);
-                })
-            .getMessage());
+            "{version}: Invalid parameter: hash key can't be empty",
+            Assertions.assertThrows(
+                    PException.class,
+                    () -> {
+                      client.delRange(
+                              tableName, null, "k1".getBytes(), "k2".getBytes(), delRangeOptions2);
+                    })
+                    .getMessage());
 
     Assertions.assertEquals(
-        "{version}: Invalid parameter: hash key can't be empty",
-        Assertions.assertThrows(
-                PException.class,
-                () -> {
-                  client.delRange(
-                      tableName, "".getBytes(), "k1".getBytes(), "k2".getBytes(), delRangeOptions2);
-                })
-            .getMessage());
+            "{version}: Invalid parameter: hash key can't be empty",
+            Assertions.assertThrows(
+                    PException.class,
+                    () -> {
+                      client.delRange(
+                              tableName, "".getBytes(), "k1".getBytes(), "k2".getBytes(), delRangeOptions2);
+                    })
+                    .getMessage());
 
     // test sortKey can be null, means delete from first to last
     Assertions.assertNull(
-        Assertions.assertDoesNotThrow(
-            () -> {
-              client.multiSet(tableName, "delRange".getBytes(), values);
-              client.delRange(tableName, "delRange".getBytes(), null, null, delRangeOptions2);
-              client.multiGet(tableName, "delRange".getBytes(), remainingSortKey, remainingValue);
-              return delRangeOptions2.nextSortKey;
-            }));
+            Assertions.assertDoesNotThrow(
+                    () -> {
+                      client.multiSet(tableName, "delRange".getBytes(), values);
+                      client.delRange(tableName, "delRange".getBytes(), null, null, delRangeOptions2);
+                      client.multiGet(tableName, "delRange".getBytes(), remainingSortKey, remainingValue);
+                      return delRangeOptions2.nextSortKey;
+                    }));
 
     Assertions.assertEquals(remainingValue.size(), 0);
   }
@@ -2536,8 +2536,8 @@ public class TestBasic {
       client.set(tableName, hashKeyExceed.getBytes(), sortKey.getBytes(), value.getBytes());
     } catch (PException e) {
       Assert.assertTrue(
-          e.getMessage()
-              .contains("Exceed the hashKey length threshold = 1024,hashKeyLength = 1025"));
+              e.getMessage()
+                      .contains("Exceed the hashKey length threshold = 1024,hashKeyLength = 1025"));
     }
 
     // test sortKey size > 1024
@@ -2547,8 +2547,8 @@ public class TestBasic {
       client.set(tableName, hashKey.getBytes(), sortKeyExceed.getBytes(), value.getBytes());
     } catch (PException e) {
       Assert.assertTrue(
-          e.getMessage()
-              .contains("Exceed the sort key length threshold = 1024,sortKeyLength = 1025"));
+              e.getMessage()
+                      .contains("Exceed the sort key length threshold = 1024,sortKeyLength = 1025"));
     }
 
     // test singleValue size > 400 * 1024
@@ -2557,8 +2557,8 @@ public class TestBasic {
       client.set(tableName, hashKey.getBytes(), sortKey.getBytes(), valueExceed.getBytes());
     } catch (PException e) {
       Assert.assertTrue(
-          e.getMessage()
-              .contains("Exceed the value length threshold = 409600,valueLength = 409601"));
+              e.getMessage()
+                      .contains("Exceed the value length threshold = 409600,valueLength = 409601"));
     }
 
     // test multi value count > 1000
@@ -2571,7 +2571,7 @@ public class TestBasic {
       client.multiSet(tableName, hashKey.getBytes(), multiValues);
     } catch (PException e) {
       Assert.assertTrue(
-          e.getMessage().contains("Exceed the value count threshold = 1000,valueCount = 2000"));
+              e.getMessage().contains("Exceed the value count threshold = 1000,valueCount = 2000"));
     }
 
     // test multi value size > 1024 * 1024
@@ -2585,7 +2585,7 @@ public class TestBasic {
       client.multiSet(tableName, hashKey.getBytes(), multiValues2);
     } catch (PException e) {
       Assert.assertTrue(
-          e.getMessage().contains("Exceed the multi value length threshold = 1048576"));
+              e.getMessage().contains("Exceed the multi value length threshold = 1048576"));
     }
 
     // test mutations value count > 1000
@@ -2599,17 +2599,17 @@ public class TestBasic {
 
     try {
       PegasusTableInterface.CheckAndMutateResult result =
-          client.checkAndMutate(
-              tableName,
-              hashKey.getBytes(),
-              sortKey.getBytes(),
-              CheckType.CT_VALUE_NOT_EXIST,
-              null,
-              mutations,
-              options);
+              client.checkAndMutate(
+                      tableName,
+                      hashKey.getBytes(),
+                      sortKey.getBytes(),
+                      CheckType.CT_VALUE_NOT_EXIST,
+                      null,
+                      mutations,
+                      options);
     } catch (PException e) {
       Assert.assertTrue(
-          e.getMessage().contains("Exceed the value count threshold = 1000,valueCount = 1500"));
+              e.getMessage().contains("Exceed the value count threshold = 1000,valueCount = 1500"));
     }
 
     // test mutations value size > 1024 * 1024
@@ -2622,17 +2622,17 @@ public class TestBasic {
 
     try {
       PegasusTableInterface.CheckAndMutateResult result =
-          client.checkAndMutate(
-              tableName,
-              hashKey.getBytes(),
-              sortKey.getBytes(),
-              CheckType.CT_VALUE_NOT_EXIST,
-              null,
-              mutations2,
-              options);
+              client.checkAndMutate(
+                      tableName,
+                      hashKey.getBytes(),
+                      sortKey.getBytes(),
+                      CheckType.CT_VALUE_NOT_EXIST,
+                      null,
+                      mutations2,
+                      options);
     } catch (PException e) {
       Assert.assertTrue(
-          e.getMessage().contains("Exceed the multi value length threshold = 1048576"));
+              e.getMessage().contains("Exceed the multi value length threshold = 1048576"));
     }
   }
 
@@ -2644,63 +2644,63 @@ public class TestBasic {
     generateRecordsWithExpired(tableName, hashKey, 1000, 10);
 
     PegasusTable table =
-        (PegasusTable) PegasusClientFactory.getSingletonClient().openTable(tableName);
+            (PegasusTable) PegasusClientFactory.getSingletonClient().openTable(tableName);
     // case A: scan all record
     // case A1: scan all record: if persistent record count >= maxFetchCount, it must return
     // maxFetchCount records
     ScanRangeResult caseA1 =
-        table.scanRange(hashKey.getBytes(), null, null, new ScanOptions(), 5, 0);
+            table.scanRange(hashKey.getBytes(), null, null, new ScanOptions(), 5, 0);
     assertScanResult(0, 4, false, caseA1);
     // case A2: scan all record: if persistent record count < maxFetchCount, it only return
     // persistent count records
     ScanRangeResult caseA2 =
-        table.scanRange(hashKey.getBytes(), null, null, new ScanOptions(), 100, 0);
+            table.scanRange(hashKey.getBytes(), null, null, new ScanOptions(), 100, 0);
     assertScanResult(0, 9, true, caseA2);
 
     // case B: scan limit record by "startSortKey" and "":
     // case B1: scan limit record by "expired_0" and "", if persistent record count >=
     // maxFetchCount, it must return maxFetchCount records
     ScanRangeResult caseB1 =
-        table.scanRange(
-            hashKey.getBytes(), "expired_0".getBytes(), "".getBytes(), new ScanOptions(), 5, 0);
+            table.scanRange(
+                    hashKey.getBytes(), "expired_0".getBytes(), "".getBytes(), new ScanOptions(), 5, 0);
     assertScanResult(0, 4, false, caseB1);
     // case B2: scan limit record by "expired_0" and "", if persistent record count < maxFetchCount,
     // it only return valid records
     ScanRangeResult caseB2 =
-        table.scanRange(
-            hashKey.getBytes(), "expired_0".getBytes(), "".getBytes(), new ScanOptions(), 50, 0);
+            table.scanRange(
+                    hashKey.getBytes(), "expired_0".getBytes(), "".getBytes(), new ScanOptions(), 50, 0);
     assertScanResult(0, 9, true, caseB2);
     // case B3: scan limit record by "persistent_5" and "", if following persistent record count <
     // maxFetchCount, it only return valid records
     ScanRangeResult caseB3 =
-        table.scanRange(
-            hashKey.getBytes(), "persistent_5".getBytes(), "".getBytes(), new ScanOptions(), 50, 0);
+            table.scanRange(
+                    hashKey.getBytes(), "persistent_5".getBytes(), "".getBytes(), new ScanOptions(), 50, 0);
     assertScanResult(5, 9, true, caseB3);
     // case B4: scan limit record by "persistent_5" and "", if following persistent record count >
     // maxFetchCount, it only return valid records
     ScanRangeResult caseB4 =
-        table.scanRange(
-            hashKey.getBytes(), "persistent_5".getBytes(), "".getBytes(), new ScanOptions(), 3, 0);
+            table.scanRange(
+                    hashKey.getBytes(), "persistent_5".getBytes(), "".getBytes(), new ScanOptions(), 3, 0);
     assertScanResult(5, 7, false, caseB4);
 
     // case C: scan limit record by "" and "stopSortKey":
     // case C1: scan limit record by "" and "expired_7", if will return 0 record
     ScanRangeResult caseC1 =
-        table.scanRange(
-            hashKey.getBytes(), "".getBytes(), "expired_7".getBytes(), new ScanOptions(), 3, 0);
+            table.scanRange(
+                    hashKey.getBytes(), "".getBytes(), "expired_7".getBytes(), new ScanOptions(), 3, 0);
     Assert.assertTrue(caseC1.allFetched);
     Assert.assertEquals(0, caseC1.results.size()); // among "" and "expired_7" has 0 valid record
     // case C2: scan limit record by "" and "persistent_7", if valid record count < maxFetchCount,
     // it only return valid record
     ScanRangeResult caseC2 =
-        table.scanRange(
-            hashKey.getBytes(), "".getBytes(), "persistent_7".getBytes(), new ScanOptions(), 10, 0);
+            table.scanRange(
+                    hashKey.getBytes(), "".getBytes(), "persistent_7".getBytes(), new ScanOptions(), 10, 0);
     assertScanResult(0, 6, true, caseC2);
     // case C3: scan limit record by "" and "persistent_7", if valid record count > maxFetchCount,
     // it only return valid record
     ScanRangeResult caseC3 =
-        table.scanRange(
-            hashKey.getBytes(), "".getBytes(), "persistent_7".getBytes(), new ScanOptions(), 2, 0);
+            table.scanRange(
+                    hashKey.getBytes(), "".getBytes(), "persistent_7".getBytes(), new ScanOptions(), 2, 0);
     assertScanResult(0, 1, false, caseC3);
 
     // case D: use multiGetSortKeys, which actually equal with case A but no value
@@ -2721,45 +2721,88 @@ public class TestBasic {
   }
 
   private void generateRecordsWithExpired(
-      String tableName, String hashKey, int expiredCount, int persistentCount)
-      throws PException, InterruptedException {
+          String tableName, String hashKey, int expiredCount, int persistentCount)
+          throws PException, InterruptedException {
     PegasusClientInterface client = PegasusClientFactory.getSingletonClient();
     // assign prefix to make sure the expire record is stored front of persistent
     String expiredSortKeyPrefix = "expired_";
     String persistentSortKeyPrefix = "persistent_";
     while (expiredCount-- > 0) {
       client.set(
-          tableName,
-          hashKey.getBytes(),
-          (expiredSortKeyPrefix + expiredCount).getBytes(),
-          (expiredSortKeyPrefix + expiredCount + "_value").getBytes(),
-          1);
+              tableName,
+              hashKey.getBytes(),
+              (expiredSortKeyPrefix + expiredCount).getBytes(),
+              (expiredSortKeyPrefix + expiredCount + "_value").getBytes(),
+              1);
     }
     // sleep to make sure the record is expired
     Thread.sleep(1000);
     while (persistentCount-- > 0) {
       client.set(
-          tableName,
-          hashKey.getBytes(),
-          (persistentSortKeyPrefix + persistentCount).getBytes(),
-          (persistentSortKeyPrefix + persistentCount + "_value").getBytes());
+              tableName,
+              hashKey.getBytes(),
+              (persistentSortKeyPrefix + persistentCount).getBytes(),
+              (persistentSortKeyPrefix + persistentCount + "_value").getBytes());
     }
     PegasusClientFactory.closeSingletonClient();
   }
 
   private void assertScanResult(
-      int startIndex, int stopIndex, boolean expectAllFetched, ScanRangeResult actuallyRes) {
+          int startIndex, int stopIndex, boolean expectAllFetched, ScanRangeResult actuallyRes) {
     Assertions.assertEquals(expectAllFetched, actuallyRes.allFetched);
     Assertions.assertEquals(stopIndex - startIndex + 1, actuallyRes.results.size());
     for (int i = startIndex; i <= stopIndex; i++) {
       Assertions.assertEquals(
-          "hashKey", new String(actuallyRes.results.get(i - startIndex).getLeft().getKey()));
+              "hashKey", new String(actuallyRes.results.get(i - startIndex).getLeft().getKey()));
       Assertions.assertEquals(
-          "persistent_" + i,
-          new String(actuallyRes.results.get(i - startIndex).getLeft().getValue()));
+              "persistent_" + i,
+              new String(actuallyRes.results.get(i - startIndex).getLeft().getValue()));
       Assertions.assertEquals(
-          "persistent_" + i + "_value",
-          new String(actuallyRes.results.get(i - startIndex).getRight()));
+              "persistent_" + i + "_value",
+              new String(actuallyRes.results.get(i - startIndex).getRight()));
+    }
+  }
+
+  public static void main(String[] args) throws PException, InterruptedException {
+    PegasusTable table =
+            (PegasusTable) PegasusClientFactory
+                    .getSingletonClient(ClientOptions.builder()
+                            .metaServers("127.0.0.1:34601,127.0.0.1:34602,127.0.0.1:34603")
+                            .build())
+                    .openTable("temp");
+    int sortKey = 0;
+    int value = 0;
+    int hash = 0;
+    String hashKey = "jiashuo";
+    List<Pair<byte[], byte[]>> values = new ArrayList<>();
+    List<byte[]> removes = new ArrayList<>();
+    while (true) {
+      String loopKey = hashKey + (++hash);
+      //System.out.println("loop: " + loopKey);
+
+      table.set(loopKey.getBytes(), String.valueOf(++sortKey).getBytes(), String.valueOf(++value).getBytes(), 0);
+
+      values.add(Pair.of(String.valueOf(++sortKey).getBytes(), String.valueOf(++value).getBytes()));
+      values.add(Pair.of(String.valueOf(++sortKey).getBytes(), String.valueOf(++value).getBytes()));
+      values.add(Pair.of(String.valueOf(++sortKey).getBytes(), String.valueOf(++value).getBytes()));
+      values.add(Pair.of(String.valueOf(++sortKey).getBytes(), String.valueOf(++value).getBytes()));
+      String delSortKey = "del";
+      values.add(Pair.of(loopKey.getBytes(), (delSortKey).getBytes()));
+      values.add(Pair.of(loopKey.getBytes(), (delSortKey+1).getBytes()));
+      values.add(Pair.of(loopKey.getBytes(), (delSortKey+2).getBytes()));
+      values.add(Pair.of(loopKey.getBytes(), (delSortKey+3).getBytes()));
+      table.multiSet(loopKey.getBytes(), values, 0);
+
+      table.del(loopKey.getBytes(), delSortKey.getBytes(), 0);
+
+      removes.add((delSortKey+1).getBytes());
+      removes.add((delSortKey+2).getBytes());
+      removes.add((delSortKey+3).getBytes());
+      table.multiDel(loopKey.getBytes(), removes, 0);
+
+      values.clear();
+      removes.clear();
+      Thread.sleep(1);
     }
   }
 }
